@@ -3,6 +3,7 @@ FROM quay.io/keycloak/keycloak:26.3.5
 # Build-time options (burada sabitlememiz gerekiyor)
 ENV KC_DB=postgres
 ENV KC_HEALTH_ENABLED=true
+ENV KC_METRICS_ENABLED=true
 
 # Provider JAR dosyasını kopyala
 COPY ./providers/*.jar /opt/keycloak/providers/
