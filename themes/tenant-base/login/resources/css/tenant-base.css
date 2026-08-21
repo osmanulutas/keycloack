@@ -1,0 +1,547 @@
+/* ==========================================================================
+   tenant-base — split panel login duzeni.
+
+   Duzen: zeminde ayni gorselin bulanik hali, ustunde kart. Kartin solunda
+   gorsel net; logo ustte, buyuk baslik + slogan altta. Sagda marka renginde
+   form paneli.
+
+   Burasi DUZENI tanimlar, markayi degil. Renk/logo/gorsel tenant temasindan
+   gelir; asagidaki --tb-* degiskenlerinin hepsinin makul bir varsayilani var.
+   Tasarim tek bir sema uzerine kurulu (theme.properties'te darkMode=false).
+   ========================================================================== */
+
+/* @import diger tum kurallardan once gelmek zorunda */
+@import url('https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@500;700;800&display=swap');
+
+:root {
+    --tb-display-font: "Plus Jakarta Sans", "RedHatDisplay", system-ui, sans-serif;
+
+    /* --- tenant tarafindan ezilir --- */
+    --tb-logo: none;
+    --tb-logo-height: 60px;
+    --tb-hero-image: none;
+    --tb-bg-blur: 14px;                    /* zemindeki gorselin bulanikligi */
+
+    --tb-brand: #0066cc;
+    --tb-brand-strong: #004f9e;
+
+    /* Sag form paneli */
+    --tb-form-from: #0a6cae;
+    --tb-form-to: #044f83;
+
+    /* Sol paneldeki gorselin uzerine, metnin okunmasi icin alttan yukari
+       acilan perde. Gorseli bogmayacak kadar hafif tutuluyor. */
+    --tb-scrim: rgba(2, 42, 72, .92);
+
+    /* --- duzen sabitleri --- */
+    --tb-card-radius: 20px;
+    --tb-field-radius: 11px;
+
+    --tb-on-form: #ffffff;                 /* mavi panel uzerindeki metin */
+    --tb-on-form-muted: rgba(255, 255, 255, .78);
+    --tb-on-form-line: rgba(255, 255, 255, .22);
+
+    --tb-field-bg: #f2f6fa;                /* acik input, koyu panel uzerinde */
+    --tb-field-bg-focus: #ffffff;
+    --tb-field-text: #1f2933;
+    --tb-field-border: transparent;
+    --tb-icon: #8496a8;
+}
+
+/* --- Zemin: ayni gorselin bulanik hali ------------------------------------
+   background-image'a dogrudan filter uygulanamiyor, bu yuzden sabit bir
+   pseudo-element kullaniyoruz. Gorsel yoksa altdaki marka gradienti kalir. */
+
+.login-pf body {
+    background: linear-gradient(150deg, var(--tb-form-from) 0%, var(--tb-form-to) 100%);
+    min-height: 100%;
+}
+
+.login-pf body::before {
+    content: "";
+    position: fixed;
+    inset: -3rem;                          /* bulanikligin kenardan sizmasini gizler */
+    z-index: -1;
+    background-image: var(--tb-hero-image);
+    background-size: cover;
+    background-position: center;
+    filter: blur(var(--tb-bg-blur)) saturate(1.15) brightness(.55);
+}
+
+.pf-v5-c-login {
+    align-items: center;
+    padding-inline: 1rem;
+}
+
+/* --- Iki panelli kart -----------------------------------------------------
+   PF `display:grid`i yalniz >=1200px'te veriyor, biz her genislikte veriyoruz. */
+
+.pf-v5-c-login__container {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    grid-template-areas: "header main";
+    align-items: stretch;
+    max-width: 66rem;
+    min-height: 35rem;
+    padding-inline: 0;
+    column-gap: 0;
+    border-radius: var(--tb-card-radius);
+    overflow: hidden;
+    /* Ince acik cizgi karti bulanik zeminden ayirir (cam kenari etkisi) */
+    box-shadow:
+        0 0 0 1px rgba(255, 255, 255, .18),
+        0 36px 72px -28px rgba(0, 12, 24, .7);
+}
+
+/* --- Sol: gorsel paneli --------------------------------------------------- */
+
+.pf-v5-c-login__header {
+    grid-area: header;
+    margin-block: 0;
+    padding: 0;
+    background-color: var(--tb-scrim);
+    /* Perde iki uctan: ustte hafif (logo okunsun), altta guclu (baslik/slogan).
+       Orta bant neredeyse net kalir, fotograf nefes alir. */
+    background-image:
+        linear-gradient(to top,
+            var(--tb-scrim) 0%,
+            color-mix(in srgb, var(--tb-scrim) 50%, transparent) 38%,
+            color-mix(in srgb, var(--tb-scrim) 5%, transparent) 62%,
+            color-mix(in srgb, var(--tb-scrim) 45%, transparent) 100%),
+        var(--tb-hero-image);
+    background-repeat: no-repeat, no-repeat;
+    background-size: cover, cover;
+    background-position: center, center;
+}
+
+#kc-brand-panel {
+    height: 100%;
+    display: flex;
+    flex-direction: column;
+    align-items: flex-start;
+    justify-content: space-between;        /* logo ustte, metin blogu altta */
+    gap: 2rem;
+    padding: 2.5rem;
+    text-align: start;
+}
+
+/* Realm adi metni ekran okuyucular icin DOM'da kalir, gorsel olarak logo gecer. */
+#kc-header-wrapper {
+    height: var(--tb-logo-height);
+    width: min(100%, 250px);
+    background: var(--tb-logo) left center / contain no-repeat;
+    margin-block-end: 0 !important;
+    font-size: 0 !important;
+    letter-spacing: normal !important;
+    color: transparent !important;
+    filter: drop-shadow(0 2px 12px rgba(0, 0, 0, .45));
+}
+
+#kc-brand-copy {
+    display: flex;
+    flex-direction: column;
+    gap: .8rem;
+}
+
+#kc-brand-headline {
+    margin: 0;
+    max-width: 22rem;
+    font-family: var(--tb-display-font);
+    font-size: clamp(1.9rem, 1.2rem + 1.8vw, 2.6rem);
+    font-weight: 800;
+    line-height: 1.12;
+    letter-spacing: -.02em;
+    color: #fff;
+    text-shadow: 0 2px 16px rgba(0, 0, 0, .45);
+    text-wrap: balance;
+}
+
+#kc-brand-tagline {
+    margin: 0;
+    max-width: 24rem;
+    color: rgba(255, 255, 255, .85);
+    font-size: .95rem;
+    line-height: 1.65;
+    text-shadow: 0 1px 10px rgba(0, 0, 0, .5);
+}
+
+/* --- Sag: form paneli (marka renginde) ------------------------------------ */
+
+.pf-v5-c-login__main {
+    grid-area: main;
+    align-self: stretch;
+    margin-block-end: 0;
+    box-shadow: none;
+    border-radius: 0;
+    background: linear-gradient(165deg, var(--tb-form-from) 0%, var(--tb-form-to) 100%);
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    color: var(--tb-on-form);
+}
+
+.pf-v5-c-login__main-header {
+    border-block-start: 0;                 /* keycloak.v2'nin 4px ust cizgisi */
+    padding-block: 0 1.6rem;
+}
+
+#kc-page-title {
+    font-family: var(--tb-display-font);
+    font-size: clamp(1.7rem, 1.1rem + 1.5vw, 2.15rem);
+    font-weight: 800;
+    line-height: 1.15;
+    letter-spacing: -.02em;
+    color: var(--tb-on-form);
+}
+
+.pf-v5-c-login__main-body {
+    padding-block-end: 1.25rem;
+}
+
+/* Dil secici: form alanlarindan farkli, hap seklinde kucuk bir cip */
+.pf-v5-c-login__main-header-utilities .pf-v5-c-form-control {
+    --pf-v5-c-form-control--PaddingTop: .42rem;
+    --pf-v5-c-form-control--PaddingBottom: .42rem;
+    --pf-v5-c-form-control--PaddingLeft: 1.1rem;
+    --pf-v5-c-form-control--FontSize: .875rem;
+    border-radius: 999px;
+    overflow: hidden;                      /* icteki select hapin disina tasamasin */
+    width: auto;
+    justify-self: end;
+}
+
+/* Tarayicinin select'e cizdigi KARE odak cercevesi hapin arkasinda kutu gibi
+   gorunuyordu; kapatip halkayi hap seklindeki sarmalayiciya veriyoruz. */
+.pf-v5-c-login__main-header-utilities select {
+    outline: none;
+}
+
+.pf-v5-c-login__main-header-utilities .pf-v5-c-form-control:focus-within {
+    box-shadow: 0 0 0 3px rgba(255, 255, 255, .45);
+}
+
+/* --- Form alanlari -------------------------------------------------------- */
+
+.pf-v5-c-form {
+    row-gap: 1.1rem;
+}
+
+.pf-v5-c-form__group-label {
+    padding-block-end: .4rem;
+}
+
+.pf-v5-c-form__label-text {
+    font-size: .82rem;
+    font-weight: 600;
+    color: var(--tb-on-form-muted);
+}
+
+/* PF'te cerceve ::before'dan, alt vurgu cizgisi ::after'dan gelir.
+   Alanlar acik renk oldugu icin cerceveyi kaldirip alt cizgiyi kapatiyoruz. */
+.pf-v5-c-form-control {
+    --pf-v5-c-form-control--BackgroundColor: var(--tb-field-bg);
+    /* Panel metni beyaz; input metni acik zeminde oldugu icin ayrica koyulastirilmali. */
+    --pf-v5-c-form-control--Color: var(--tb-field-text);
+    --pf-v5-c-form-control--before--BorderTopWidth: 0;
+    --pf-v5-c-form-control--before--BorderRightWidth: 0;
+    --pf-v5-c-form-control--before--BorderLeftWidth: 0;
+    --pf-v5-c-form-control--before--BorderBottomWidth: 0;
+    --pf-v5-c-form-control--after--BorderBottomWidth: 0;
+    --pf-v5-c-form-control--PaddingTop: .82rem;
+    --pf-v5-c-form-control--PaddingBottom: .82rem;
+    --pf-v5-c-form-control--PaddingLeft: 1rem;
+    --pf-v5-c-form-control--PaddingRight: 1rem;
+    border-radius: var(--tb-field-radius);
+    transition: box-shadow .15s ease, background-color .15s ease;
+}
+
+.pf-v5-c-form-control::before { border-radius: inherit; }
+.pf-v5-c-form-control::after  { border-block-end: 0; }
+
+.pf-v5-c-form-control:focus-within {
+    --pf-v5-c-form-control--BackgroundColor: var(--tb-field-bg-focus);
+    box-shadow: 0 0 0 3px rgba(255, 255, 255, .45);
+}
+
+.pf-v5-c-form-control > input:focus { outline: none; }
+
+/* Alan ikonu — PF'in kullanmadigimiz ::after'ini ikon kutusuna ceviriyoruz.
+   Kutu input'un kendisine bagli oldugu icin altta yardimci metin olsa da
+   olmasa da her zaman dikey ortada kalir. mask kullaniliyor: renk CSS'ten. */
+.pf-v5-c-form-control:has(> input#username) { --tb-field-icon: url("../img/icon-user.svg"); }
+.pf-v5-c-form-control:has(> input#password) { --tb-field-icon: url("../img/icon-lock.svg"); }
+
+.pf-v5-c-form-control:has(> input#username)::after,
+.pf-v5-c-form-control:has(> input#password)::after {
+    border-block-end: 0;
+    inset-block: 0;
+    inset-inline-start: 1rem;
+    inset-inline-end: auto;
+    width: 1.15rem;
+    background-color: var(--tb-icon);
+    -webkit-mask: var(--tb-field-icon) center / 1.15rem no-repeat;
+    mask: var(--tb-field-icon) center / 1.15rem no-repeat;
+    transition: background-color .15s ease;
+}
+
+.pf-v5-c-form-control:has(> input#username):focus-within::after,
+.pf-v5-c-form-control:has(> input#password):focus-within::after {
+    background-color: var(--tb-brand);
+}
+
+.pf-v5-c-form-control:has(> input#username) > input,
+.pf-v5-c-form-control:has(> input#password) > input {
+    padding-inline-start: 2.9rem;
+}
+
+/* Parola alani + goz butonu tek bir kutu gibi gorunsun. */
+.pf-v5-c-input-group .pf-v5-c-form-control {
+    border-start-end-radius: 0;
+    border-end-end-radius: 0;
+}
+
+/* Odak halkasi ve beyaz zemin input parcasina degil kutunun TAMAMINA:
+   yoksa halka goz butonundan once bitiyor, alan yarim aydinlanmis gorunuyor. */
+.pf-v5-c-input-group {
+    border-radius: var(--tb-field-radius);
+    transition: box-shadow .15s ease;
+}
+
+.pf-v5-c-input-group:focus-within {
+    box-shadow: 0 0 0 3px rgba(255, 255, 255, .45);
+}
+
+.pf-v5-c-input-group .pf-v5-c-form-control:focus-within {
+    box-shadow: none;
+}
+
+/* PF, pf-m-control butonunun alt kenarina ::after ile koyu bir vurgu cizgisi
+   ciziyor (üstelik border-radius:initial ile köşesiz). Kutuyu bozdugu icin kapali. */
+.pf-v5-c-input-group .pf-v5-c-button.pf-m-control::after {
+    display: none;
+}
+
+.pf-v5-c-input-group .pf-v5-c-button.pf-m-control {
+    background: var(--tb-field-bg);
+    border: 0;
+    border-start-start-radius: 0;
+    border-end-start-radius: 0;
+    border-start-end-radius: var(--tb-field-radius);
+    border-end-end-radius: var(--tb-field-radius);
+    color: var(--tb-icon);
+    transition: color .15s ease, background-color .15s ease;
+}
+
+.pf-v5-c-input-group:focus-within .pf-v5-c-button.pf-m-control {
+    background: var(--tb-field-bg-focus);
+}
+
+.pf-v5-c-input-group .pf-v5-c-button.pf-m-control:hover { color: var(--tb-brand); }
+
+/* Beni hatirla / parolami unuttum satiri */
+.pf-v5-c-form__helper-text { padding-block-start: .55rem; }
+
+.pf-v5-c-check__label,
+.pf-v5-c-helper-text__item-text {
+    font-size: .85rem;
+    color: var(--tb-on-form-muted);
+}
+
+/* Onay kutusu mavi panelde beyaz dolsun, varsayilan lacivertte kayboluyor */
+.pf-v5-c-check__input { accent-color: #ffffff; }
+
+/* --- Butonlar -------------------------------------------------------------
+   Login disinda parola sifirlama, kayit, OTP gibi sayfalar da ayni butonlari
+   kullaniyor; o yuzden id degil varyant siniflari hedefleniyor.
+   Mavi panel uzerinde birincil buton beyaz: en yuksek kontrast. */
+
+.pf-v5-c-button { --pf-v5-c-button--BorderRadius: var(--tb-field-radius); }
+
+.pf-v5-c-login__main .pf-v5-c-button.pf-m-primary {
+    --pf-v5-c-button--m-primary--BackgroundColor: #ffffff;
+    --pf-v5-c-button--m-primary--hover--BackgroundColor: #eef4fa;
+    --pf-v5-c-button--m-primary--focus--BackgroundColor: #eef4fa;
+    --pf-v5-c-button--m-primary--active--BackgroundColor: #eef4fa;
+    --pf-v5-c-button--m-primary--Color: var(--tb-brand-strong);
+    color: var(--tb-brand-strong);
+    padding-block: .85rem;
+    font-family: var(--tb-display-font);
+    font-size: 1rem;
+    font-weight: 700;
+    text-decoration: none;
+    transition: transform .12s ease, box-shadow .12s ease, background-color .12s ease;
+}
+
+.pf-v5-c-login__main .pf-v5-c-button.pf-m-primary:hover {
+    transform: translateY(-1px);
+    box-shadow: 0 10px 24px -8px rgba(0, 0, 0, .45);
+    color: var(--tb-brand-strong);
+}
+
+.pf-v5-c-login__main .pf-v5-c-button.pf-m-primary:active { transform: translateY(0); }
+
+/* Ikincil buton ("Giris'e geri don" gibi): hayalet buton — seffaf zemin,
+   beyaz cerceve, beyaz metin. PF cerceveyi ::after ile cizdigi icin oradan. */
+.pf-v5-c-login__main .pf-v5-c-button.pf-m-secondary {
+    --pf-v5-c-button--m-secondary--Color: #ffffff;
+    --pf-v5-c-button--m-secondary--hover--Color: #ffffff;
+    color: #fff;
+    background: transparent;
+    padding-block: .8rem;
+    font-family: var(--tb-display-font);
+    font-size: .95rem;
+    font-weight: 600;
+    text-decoration: none;
+    transition: background-color .12s ease;
+}
+
+.pf-v5-c-login__main .pf-v5-c-button.pf-m-secondary::after {
+    border: 1.5px solid rgba(255, 255, 255, .55);
+    border-radius: var(--tb-field-radius);
+}
+
+.pf-v5-c-login__main .pf-v5-c-button.pf-m-secondary:hover {
+    background: rgba(255, 255, 255, .12);
+    color: #fff;
+}
+
+.pf-v5-c-login__main .pf-v5-c-button.pf-m-secondary:hover::after {
+    border-color: rgba(255, 255, 255, .85);
+}
+
+/* Metin gorunumlu butonlar da mavi panelde beyaz olmali */
+.pf-v5-c-login__main .pf-v5-c-button.pf-m-link {
+    --pf-v5-c-button--m-link--Color: #ffffff;
+    --pf-v5-c-button--m-link--hover--Color: #ffffff;
+    color: #fff;
+}
+
+a {
+    color: var(--tb-on-form);
+    text-decoration: underline;
+    text-underline-offset: 2px;
+}
+
+a:hover { color: #fff; }
+
+/* --- "veya ... ile giris" ayraci ------------------------------------------ */
+
+.pf-v5-c-login__main-footer .pf-v5-c-login__main-footer-band:not(#kc-info) {
+    border-block-start: 0;
+    padding-block: .5rem 1rem;
+    display: flex;
+    align-items: center;
+    gap: .9rem;
+    font-size: .8rem;
+    color: var(--tb-on-form-muted);
+}
+
+.pf-v5-c-login__main-footer .pf-v5-c-login__main-footer-band:not(#kc-info)::before,
+.pf-v5-c-login__main-footer .pf-v5-c-login__main-footer-band:not(#kc-info)::after {
+    content: "";
+    flex: 1;
+    height: 1px;
+    background: var(--tb-on-form-line);
+}
+
+.pf-v5-c-login__main-footer-band:not(#kc-info) .pf-v5-c-login__main-footer-band-item {
+    padding-block-start: 0;
+    white-space: nowrap;
+}
+
+/* --- Sosyal saglayicilar: yan yana, beyaz -------------------------------- */
+
+#kc-social-providers ul {
+    display: flex;
+    flex-wrap: wrap;
+    gap: .6rem;
+    margin: 0;
+    padding: 0;
+    list-style: none;
+}
+
+#kc-social-providers li {
+    flex: 1 1 0;
+    min-width: 5.5rem;
+    padding: 0;
+}
+
+#kc-social-providers .pf-v5-c-button {
+    justify-content: center;
+    gap: .5rem;
+    padding-inline: .75rem;
+    border: 0;
+    background: #fff;
+    color: var(--tb-field-text);
+    text-decoration: none;
+}
+
+#kc-social-providers .pf-v5-c-button:hover { background: #eef4fa; }
+#kc-social-providers svg { flex: none; }
+
+/* Cok saglayici varsa isimleri gizle, ikon yeter */
+#kc-social-providers ul:has(li:nth-child(4)) .pf-v5-u-m-auto { display: none; }
+
+/* --- Kayit bandi ---------------------------------------------------------- */
+
+#kc-info {
+    border-block-start: 1px solid var(--tb-on-form-line);
+    text-align: center;
+    font-size: .875rem;
+}
+
+/* PF'in icerideki elemanlara verdigi soluk gri (Color--200) mavi zeminde
+   okunmuyor; bilgi metnini her durumda beyaza sabitle. */
+#kc-info,
+#kc-info p,
+#kc-info span,
+#kc-info div {
+    color: rgba(255, 255, 255, .92);
+}
+
+#kc-info a {
+    color: #fff;
+    font-weight: 600;
+}
+
+/* --- Dar ekran: tek kolona in --------------------------------------------- */
+
+@media (max-width: 768px) {
+    .pf-v5-c-login__container {
+        grid-template-columns: 100%;
+        grid-template-areas: "header" "main";
+        max-width: 28rem;
+        min-height: 0;
+    }
+
+    .pf-v5-c-login__header {
+        min-height: 15rem;
+    }
+
+    #kc-brand-panel {
+        padding: 1.75rem 1.5rem;
+        gap: 1.25rem;
+    }
+
+    #kc-brand-headline { font-size: 1.6rem; }
+    #kc-brand-tagline  { display: none; }  /* mobilde form one ciksin */
+
+    :root { --tb-logo-height: 44px; }
+
+    /* Masaustunde panel dikey ortalandigi icin ust bosluk gerekmiyor ama
+       mobilde panel icerige gore buyudugunden baslik tepeye yapisiyordu.
+       Ayrica baslik + dil hapini tek satira aliyoruz. */
+    .pf-v5-c-login__main-header {
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        gap: 1rem;
+        padding-block: 1.9rem 1.1rem;
+    }
+
+    #kc-page-title { font-size: 1.5rem; }
+
+    .pf-v5-c-login__main-body {
+        padding-block-end: 1.75rem;
+    }
+}
