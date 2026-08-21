@@ -1,0 +1,154 @@
+/* ==========================================================================
+   Euroriente login teması — keycloak.v2 üzerine ince bir marka katmanı.
+   Yeni bir tenant için: bu klasörü kopyala, asagidaki :root blogundaki
+   4 degeri ve img/ altindaki logoyu degistir. Baska hicbir sey gerekmiyor.
+   ========================================================================== */
+
+:root {
+    --eo-logo-url: url("../img/euroriente-logo.svg");
+    --eo-logo-height: 46px;
+    --eo-brand: #027dc5;
+    --eo-brand-dark: #015d93;
+    --eo-accent: #31af89;
+
+    --eo-page-bg-from: #04121f;
+    --eo-page-bg-to: #072d47;
+
+    /* keycloak.v2'nin kart ust cizgisi bu degiskenden geliyor */
+    --keycloak-card-top-color: var(--eo-brand);
+}
+
+/* --- Arka plan ---------------------------------------------------------- */
+
+.login-pf body {
+    background: var(--eo-page-bg-from);
+    background-image:
+        radial-gradient(60rem 40rem at 15% -10%, rgba(2, 125, 197, 0.45), transparent 60%),
+        radial-gradient(45rem 35rem at 90% 110%, rgba(49, 175, 137, 0.28), transparent 60%),
+        linear-gradient(160deg, var(--eo-page-bg-from) 0%, var(--eo-page-bg-to) 100%);
+    background-repeat: no-repeat;
+    background-attachment: fixed;
+    background-size: cover;
+    min-height: 100%;
+}
+
+.pf-v5-c-login {
+    padding-block: clamp(2rem, 8vh, 5rem);
+}
+
+/* --- Header: realm adı yerine logo --------------------------------------
+   Metin DOM'da kalır (ekran okuyucular için), sadece görsel olarak gizlenir. */
+
+#kc-header-wrapper {
+    height: var(--eo-logo-height);
+    background-image: var(--eo-logo-url);
+    background-repeat: no-repeat;
+    background-position: center;
+    background-size: contain;
+    font-size: 0 !important;
+    letter-spacing: normal !important;
+    color: transparent !important;
+    margin-block-end: 0.5rem;
+}
+
+/* --- Kart ---------------------------------------------------------------- */
+
+.pf-v5-c-login__main {
+    border-radius: 16px;
+    overflow: hidden;
+    border: 1px solid rgba(255, 255, 255, 0.08);
+    box-shadow:
+        0 1px 2px rgba(0, 0, 0, 0.15),
+        0 24px 48px -12px rgba(0, 0, 0, 0.45);
+}
+
+.pf-v5-c-login__main-header {
+    padding-block-start: var(--pf-v5-global--spacer--xl);
+}
+
+#kc-page-title {
+    font-size: 1.5rem;
+    font-weight: 600;
+    letter-spacing: -0.01em;
+}
+
+/* --- Form alanları ------------------------------------------------------- */
+
+.pf-v5-c-form-control {
+    --pf-v5-c-form-control--BorderRadius: 8px;
+    --pf-v5-c-form-control--after--BorderBottomColor: transparent;
+    border: 1px solid var(--pf-v5-global--BorderColor--100);
+    transition: border-color 0.15s ease, box-shadow 0.15s ease;
+}
+
+.pf-v5-c-form-control:focus-within {
+    border-color: var(--eo-brand);
+    box-shadow: 0 0 0 3px rgba(2, 125, 197, 0.18);
+}
+
+/* --- Butonlar ------------------------------------------------------------ */
+
+.pf-v5-c-button {
+    --pf-v5-c-button--BorderRadius: 8px;
+    --pf-v5-c-button--FontWeight: 600;
+}
+
+.pf-v5-c-button.pf-m-primary {
+    --pf-v5-c-button--m-primary--BackgroundColor: var(--eo-brand);
+    --pf-v5-c-button--m-primary--hover--BackgroundColor: var(--eo-brand-dark);
+    --pf-v5-c-button--m-primary--focus--BackgroundColor: var(--eo-brand-dark);
+    --pf-v5-c-button--m-primary--active--BackgroundColor: var(--eo-brand-dark);
+    transition: transform 0.12s ease, box-shadow 0.12s ease, background-color 0.12s ease;
+}
+
+.pf-v5-c-button.pf-m-primary:hover {
+    transform: translateY(-1px);
+    box-shadow: 0 6px 16px -4px rgba(2, 125, 197, 0.5);
+}
+
+.pf-v5-c-button.pf-m-primary:active {
+    transform: translateY(0);
+}
+
+.pf-v5-c-button.pf-m-link {
+    --pf-v5-c-button--m-link--Color: var(--eo-brand);
+    --pf-v5-c-button--m-link--hover--Color: var(--eo-brand-dark);
+}
+
+a {
+    color: var(--eo-brand);
+}
+
+/* --- Alt bilgi bandı ------------------------------------------------------ */
+
+.pf-v5-c-login__main-footer-band {
+    border-block-start: 1px solid var(--pf-v5-global--BorderColor--100);
+    padding-block-start: var(--pf-v5-global--spacer--md);
+}
+
+/* --- Koyu tema ------------------------------------------------------------ */
+
+.pf-v5-theme-dark {
+    --eo-brand: #3aa9e8;
+    --eo-brand-dark: #1f8fd0;
+}
+
+.pf-v5-theme-dark .pf-v5-c-login__main {
+    border-color: rgba(255, 255, 255, 0.12);
+}
+
+.pf-v5-theme-dark .pf-v5-c-form-control:focus-within {
+    box-shadow: 0 0 0 3px rgba(58, 169, 232, 0.22);
+}
+
+/* --- Küçük ekran ---------------------------------------------------------- */
+
+@media (max-width: 576px) {
+    :root {
+        --eo-logo-height: 36px;
+    }
+
+    .pf-v5-c-login__main {
+        border-radius: 12px;
+    }
+}
