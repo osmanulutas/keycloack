@@ -1,0 +1,37 @@
+/* ==========================================================================
+   Tempel Travel — marka katmani.
+   Duzenin tamami tenant-base'den geliyor; burasi sadece marka degiskenlerini,
+   logoyu ve gorseli veriyor.
+   Renkler tempeltravel.com'un kendi CSS'inden: --tp-theme-1: #00487a.
+   ========================================================================== */
+
+:root {
+    --tb-logo: url("../img/tempeltravel-logo.png");
+    --tb-logo-height: 56px;
+
+    --tb-brand: #00487a;
+    --tb-brand-strong: #00335a;
+
+    /* Bogaz kiyisi (Unsplash, ucretsiz lisans) — zeminde bulanik, solda net */
+    --tb-hero-image: url("../img/hero.jpg");
+
+    /* Sag form paneli — marka laciverti */
+    --tb-form-from: #0f5f97;
+    --tb-form-to: #012f52;
+
+    /* Soldaki gorselin perdesi */
+    --tb-scrim: rgba(1, 32, 56, .92);
+}
+
+/* Logo koyu renkli ve acik zemin icin tasarlanmis (lacivert + gri metin);
+   koyu panelde kaybolmasin diye beyaz bir plaka ustune aliyoruz.
+   background-origin: content-box -> gorsel padding'in icinde kalir. */
+#kc-header-wrapper {
+    background-color: #ffffff;
+    background-position: center;
+    background-origin: content-box;
+    padding: .7rem 1rem;
+    border-radius: 12px;
+    width: min(100%, 240px);
+    box-shadow: 0 4px 18px rgba(0, 0, 0, .3);
+}

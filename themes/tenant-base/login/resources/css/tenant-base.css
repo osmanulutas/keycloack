@@ -101,7 +101,16 @@
     padding: 0;
     background-color: var(--tb-scrim);
     /* Perde iki uctan: ustte hafif (logo okunsun), altta guclu (baslik/slogan).
-       Orta bant neredeyse net kalir, fotograf nefes alir. */
+       Orta bant neredeyse net kalir, fotograf nefes alir.
+       Ilk satir color-mix desteklemeyen tarayicilar icin sabit yedek:
+       o satir olmazsa declaration komple reddedilip panel duz lacivert kaliyor. */
+    background-image:
+        linear-gradient(to top,
+            var(--tb-scrim) 0%,
+            rgba(4, 34, 60, .5) 38%,
+            rgba(4, 34, 60, .06) 62%,
+            rgba(4, 34, 60, .45) 100%),
+        var(--tb-hero-image);
     background-image:
         linear-gradient(to top,
             var(--tb-scrim) 0%,
@@ -345,6 +354,19 @@
 .pf-v5-c-helper-text__item-text {
     font-size: .85rem;
     color: var(--tb-on-form-muted);
+}
+
+/* "Parolanizi mi unuttunuz?" — mavi zeminde soluk kalmasin, PF'in link
+   rengini de kesin olarak ez. */
+.pf-v5-c-helper-text__item-text a {
+    color: #ffffff;
+    font-weight: 600;
+    text-decoration: underline;
+    text-underline-offset: 3px;
+}
+
+.pf-v5-c-helper-text__item-text a:hover {
+    text-decoration-thickness: 2px;
 }
 
 /* Onay kutusu mavi panelde beyaz dolsun, varsayilan lacivertte kayboluyor */
